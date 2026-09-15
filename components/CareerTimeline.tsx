@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { CareerStep } from "@/lib/types";
 import ClubBadge from "@/components/ClubBadge";
+import { springPop } from "@/lib/motion";
 
 const transferLabels: Record<string, string> = {
   transfert: "Transfert",
@@ -23,9 +24,9 @@ export default function CareerTimeline({
       {career.map((step, i) => (
         <motion.li
           key={i}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.06, duration: 0.3 }}
+          initial={{ opacity: 0, y: 10, scale: 0.94 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ ...springPop, delay: i * 0.05 }}
           className="flex md:flex-col items-stretch"
         >
           <div className="flex md:flex-col items-center gap-3 md:gap-2.5 py-3 md:py-0 md:min-w-[132px]">

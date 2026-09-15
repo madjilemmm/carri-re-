@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import PageTransition from "@/components/PageTransition";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -27,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh flex flex-col bg-background text-text-primary antialiased overflow-x-hidden">
         <NavBar />
         <main className="flex-1 flex flex-col pb-[calc(48px+env(safe-area-inset-bottom))] md:pb-0">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
       </body>
     </html>

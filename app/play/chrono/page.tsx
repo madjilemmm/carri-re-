@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { players as allPlayers } from "@/data/players";
 import GuessRound, { RoundResult } from "@/components/GuessRound";
 import SessionEnd from "@/components/SessionEnd";
+import { springSnappy } from "@/lib/motion";
 
 const DURATION = 60;
 
@@ -55,7 +56,9 @@ export default function ChronoMode() {
         <motion.button
           type="button"
           onClick={() => setStarted(true)}
-          whileTap={{ scale: 0.97 }}
+          whileTap={{ scale: 0.95 }}
+          whileHover={{ y: -2 }}
+          transition={springSnappy}
           className="rounded-lg bg-purple text-white font-semibold px-8 py-3.5 hover:bg-purple-dark transition-colors"
         >
           Démarrer

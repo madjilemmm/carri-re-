@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useGameStore } from "@/lib/store";
+import { springSnappy } from "@/lib/motion";
 
 const stats = [
   { key: "currentStreak", label: "Série en cours" },
@@ -48,7 +49,9 @@ export default function Home() {
       >
         <Link href="/play" className="flex-1">
           <motion.span
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.96 }}
+            whileHover={{ y: -2 }}
+            transition={springSnappy}
             className="block text-center rounded-lg bg-purple text-white font-semibold py-3.5 px-6 hover:bg-purple-dark transition-colors"
           >
             Jouer
@@ -56,7 +59,9 @@ export default function Home() {
         </Link>
         <Link href="/daily" className="flex-1">
           <motion.span
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.96 }}
+            whileHover={{ y: -2, borderColor: "var(--color-purple)" }}
+            transition={springSnappy}
             className="block text-center rounded-lg border border-border font-semibold py-3.5 px-6 hover:border-purple/50 hover:text-purple transition-colors"
           >
             Daily

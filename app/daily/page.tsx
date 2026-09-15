@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getDailyPlayer, getDailyIndex } from "@/data/players";
 import GuessRound, { RoundResult } from "@/components/GuessRound";
 import { useGameStore, todayKey } from "@/lib/store";
+import { springSnappy } from "@/lib/motion";
 
 export default function DailyMode() {
   const player = useMemo(() => getDailyPlayer(), []);
@@ -62,7 +63,9 @@ export default function DailyMode() {
           <motion.button
             type="button"
             onClick={() => navigator.clipboard?.writeText(shareText)}
-            whileTap={{ scale: 0.97 }}
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ y: -2, borderColor: "var(--color-purple)" }}
+            transition={springSnappy}
             className="mt-8 rounded-lg border border-border font-semibold px-6 py-3 hover:border-purple/40 transition-colors"
           >
             Copier le résultat

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { springSnappy } from "@/lib/motion";
 
 const links = [
   { href: "/daily", label: "Daily" },
@@ -34,7 +36,11 @@ export default function NavBar() {
               >
                 {l.label}
                 {active && (
-                  <span className="absolute left-3 right-3 -bottom-[21px] h-[2px] bg-purple rounded-full" />
+                  <motion.span
+                    layoutId="nav-underline"
+                    transition={springSnappy}
+                    className="absolute left-3 right-3 -bottom-[21px] h-[2px] bg-purple rounded-full"
+                  />
                 )}
               </Link>
             );
@@ -63,7 +69,13 @@ export default function NavBar() {
                 active ? "text-purple" : "text-text-secondary"
               }`}
             >
-              <span className={`inline-block ${active ? "font-semibold" : ""}`}>{l.label}</span>
+              <motion.span
+                whileTap={{ scale: 0.9 }}
+                transition={springSnappy}
+                className={`inline-block ${active ? "font-semibold" : ""}`}
+              >
+                {l.label}
+              </motion.span>
             </Link>
           );
         })}

@@ -1,24 +1,35 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import { Player } from "@/lib/types";
 import { searchPlayers } from "@/lib/search";
 import { players as allPlayers } from "@/data/players";
+import { shakeX } from "@/lib/motion";
 
 export default function PlayerSearch({
   onGuess,
   disabled,
   excludeIds = [],
+  shakeSignal,
 }: {
   onGuess: (player: Player) => void;
   disabled?: boolean;
   excludeIds?: string[];
+  shakeSignal?: number;
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputControls = useAnimation();
+
+  useEffect(() => {
+    if (shakeSignal) {
+      inputControls.start({ x: shakeX.x, transition: shakeX.transition });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shakeSignal]);
 
   const pool = useMemo(
     () => allPlayers.filter((p) => !excludeIds.includes(p.id)),
@@ -79,7 +90,7 @@ export default function PlayerSearch({
           >
             {results.map((r, i) => (
               <li key={r.player.id}>
-                <button
+                <motion.button
                   type="button"
                   role="option"
                   aria-selected={i === activeIndex}
@@ -88,6 +99,7 @@ export default function PlayerSearch({
                     submitGuess(r.player);
                   }}
                   onMouseEnter={() => setActiveIndex(i)}
+                  whileTap={{ scale: 0.98 }}
                   className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
                     i === activeIndex ? "bg-purple/[0.08]" : "hover:bg-border/30"
                   }`}
@@ -112,13 +124,13 @@ export default function PlayerSearch({
                       {r.player.nationality} · {r.player.position}
                     </p>
                   </div>
-                </button>
+                </motion.button>
               </li>
             ))}
           </motion.ul>
         )}
       </AnimatePresence>
-      <input
+      <motion.input
         type="text"
         inputMode="text"
         autoComplete="off"
@@ -132,6 +144,7 @@ export default function PlayerSearch({
         placeholder="Rechercher un joueur…"
         aria-label="Rechercher un joueur"
         aria-autocomplete="list"
+        animate={inputControls}
         className="w-full rounded-lg border border-border bg-surface px-4 py-3.5 text-base placeholder:text-text-secondary disabled:opacity-50 focus:border-purple transition-colors"
       />
     </div>

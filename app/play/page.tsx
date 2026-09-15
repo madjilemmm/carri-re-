@@ -7,6 +7,7 @@ import { Difficulty } from "@/lib/types";
 import { DIFFICULTY_LABELS, DIFFICULTY_DESCRIPTIONS } from "@/lib/game";
 import { getPlayersByDifficulty } from "@/data/players";
 import { randomSeed } from "@/lib/random";
+import { springSnappy } from "@/lib/motion";
 
 const difficulties: Difficulty[] = ["facile", "normal", "difficile", "expert"];
 
@@ -35,10 +36,13 @@ export default function PlaySelect() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <button
+              <motion.button
                 type="button"
                 onClick={() => startSession(d)}
-                className="w-full flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 hover:bg-purple/[0.03] transition-colors group text-left"
+                whileTap={{ scale: 0.98 }}
+                whileHover={{ y: -2, borderColor: "var(--color-purple)" }}
+                transition={springSnappy}
+                className="w-full flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:bg-purple/[0.03] transition-colors group text-left"
               >
                 <div>
                   <p className="font-semibold text-lg">{DIFFICULTY_LABELS[d]}</p>
@@ -49,7 +53,7 @@ export default function PlaySelect() {
                 <span className="text-text-secondary group-hover:text-purple group-hover:translate-x-0.5 transition-all text-sm shrink-0 ml-4 tabular-nums">
                   {getPlayersByDifficulty(d).length} joueurs →
                 </span>
-              </button>
+              </motion.button>
             </motion.li>
           ))}
         </ul>
