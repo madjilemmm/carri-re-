@@ -1,14 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Difficulty } from "@/lib/types";
 import { DIFFICULTY_LABELS, DIFFICULTY_DESCRIPTIONS } from "@/lib/game";
 import { getPlayersByDifficulty } from "@/data/players";
+import { randomSeed } from "@/lib/random";
 
 const difficulties: Difficulty[] = ["facile", "normal", "difficile", "expert"];
 
 export default function PlaySelect() {
+  const router = useRouter();
+
+  function startSession(d: Difficulty) {
+    router.push(`/play/${d}?seed=${randomSeed()}`);
+  }
+
   return (
     <div className="flex-1 flex flex-col items-center px-6 py-14">
       <div className="max-w-xl w-full">
@@ -27,9 +35,10 @@ export default function PlaySelect() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Link
-                href={`/play/${d}`}
-                className="flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 hover:bg-purple/[0.03] transition-colors group"
+              <button
+                type="button"
+                onClick={() => startSession(d)}
+                className="w-full flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 hover:bg-purple/[0.03] transition-colors group text-left"
               >
                 <div>
                   <p className="font-semibold text-lg">{DIFFICULTY_LABELS[d]}</p>
@@ -40,7 +49,7 @@ export default function PlaySelect() {
                 <span className="text-text-secondary group-hover:text-purple group-hover:translate-x-0.5 transition-all text-sm shrink-0 ml-4 tabular-nums">
                   {getPlayersByDifficulty(d).length} joueurs →
                 </span>
-              </Link>
+              </button>
             </motion.li>
           ))}
         </ul>

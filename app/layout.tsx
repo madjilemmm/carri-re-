@@ -26,7 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="fr" className={`${dmSans.variable} h-dvh`}>
       <body className="min-h-dvh flex flex-col bg-background text-text-primary antialiased overflow-x-hidden">
         <NavBar />
-        <main className="flex-1 flex flex-col">{children}</main>
+        <main className="flex-1 flex flex-col pb-[calc(48px+env(safe-area-inset-bottom))] md:pb-0">
+          {children}
+        </main>
       </body>
     </html>
   );

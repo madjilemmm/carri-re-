@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
+import { use, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Difficulty } from "@/lib/types";
 import { getPlayersByDifficulty } from "@/data/players";
 import { DIFFICULTY_LABELS } from "@/lib/game";
@@ -8,13 +9,29 @@ import GameHeader from "@/components/GameHeader";
 import GuessRound, { RoundResult } from "@/components/GuessRound";
 import SessionEnd from "@/components/SessionEnd";
 import { useGameStore } from "@/lib/store";
+import { randomSeed } from "@/lib/random";
 
 const SESSION_SIZE = 10;
 
-function shuffle<T>(arr: T[]): T[] {
+// Deterministic PRNG so the shuffle produces identical output on the
+// server-rendered HTML and the client hydration pass (avoids a
+// hydration mismatch that a Math.random()-based shuffle would cause).
+function mulberry32(seed: number) {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+  const rand = mulberry32(seed);
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rand() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -22,22 +39,40 @@ function shuffle<T>(arr: T[]): T[] {
 
 export default function ClassicSession({
   params,
+  searchParams,
 }: {
   params: Promise<{ difficulty: Difficulty }>;
+  searchParams: Promise<{ seed?: string }>;
 }) {
   const { difficulty } = use(params);
+  const { seed: seedParam } = use(searchParams);
+  const router = useRouter();
   const recordSession = useGameStore((s) => s.recordSession);
 
-  const sessionPlayers = useMemo(() => {
-    const pool = getPlayersByDifficulty(difficulty);
-    return shuffle(pool).slice(0, Math.min(SESSION_SIZE, pool.length));
-  }, [difficulty]);
+  // Falls back to a fixed seed (e.g. a hard refresh with no ?seed=) so
+  // server and client always agree, at the cost of losing randomness
+  // only in that edge case.
+  const seed = seedParam ? Number(seedParam) : 1;
+
+  const sessionPlayers = seededShuffle(getPlayersByDifficulty(difficulty), seed).slice(
+    0,
+    Math.min(SESSION_SIZE, getPlayersByDifficulty(difficulty).length)
+  );
 
   const [index, setIndex] = useState(0);
   const [results, setResults] = useState<RoundResult[]>([]);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [done, setDone] = useState(false);
+
+  function replay() {
+    router.push(`/play/${difficulty}?seed=${randomSeed()}`);
+    setIndex(0);
+    setResults([]);
+    setStreak(0);
+    setBestStreak(0);
+    setDone(false);
+  }
 
   if (sessionPlayers.length === 0) {
     return (
@@ -94,6 +129,7 @@ export default function ClassicSession({
         bestStreak={bestStreak}
         averageTimeSec={averageTimeSec}
         replayHref={`/play/${difficulty}`}
+        onReplay={replay}
       />
     );
   }

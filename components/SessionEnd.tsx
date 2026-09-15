@@ -10,6 +10,7 @@ export default function SessionEnd({
   bestStreak,
   averageTimeSec,
   replayHref,
+  onReplay,
   shareText,
 }: {
   correctCount: number;
@@ -18,6 +19,7 @@ export default function SessionEnd({
   bestStreak: number;
   averageTimeSec: number;
   replayHref: string;
+  onReplay?: () => void;
   shareText?: string;
 }) {
   return (
@@ -57,14 +59,25 @@ export default function SessionEnd({
         </div>
 
         <div className="flex flex-col gap-3 mt-10">
-          <Link href={replayHref}>
-            <motion.span
+          {onReplay ? (
+            <motion.button
+              type="button"
+              onClick={onReplay}
               whileTap={{ scale: 0.97 }}
-              className="block rounded-lg bg-purple text-white font-semibold py-3.5 hover:bg-purple-dark transition-colors"
+              className="rounded-lg bg-purple text-white font-semibold py-3.5 hover:bg-purple-dark transition-colors"
             >
               Rejouer
-            </motion.span>
-          </Link>
+            </motion.button>
+          ) : (
+            <Link href={replayHref}>
+              <motion.span
+                whileTap={{ scale: 0.97 }}
+                className="block rounded-lg bg-purple text-white font-semibold py-3.5 hover:bg-purple-dark transition-colors"
+              >
+                Rejouer
+              </motion.span>
+            </Link>
+          )}
           <Link href="/play">
             <motion.span
               whileTap={{ scale: 0.97 }}

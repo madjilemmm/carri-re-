@@ -68,11 +68,6 @@ export default function NavBar() {
           );
         })}
       </nav>
-      <div
-        className="md:hidden shrink-0"
-        style={{ height: "calc(48px + env(safe-area-inset-bottom))" }}
-        aria-hidden
-      />
     </>
   );
 }
