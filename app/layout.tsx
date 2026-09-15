@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
@@ -14,10 +14,17 @@ export const metadata: Metadata = {
   description: "Reconnais le joueur à sa carrière. Moins d'indices, plus de points.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#F5F5F2",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${dmSans.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-background text-text-primary antialiased">
+    <html lang="fr" className={`${dmSans.variable} h-dvh`}>
+      <body className="min-h-dvh flex flex-col bg-background text-text-primary antialiased overflow-x-hidden">
         <NavBar />
         <main className="flex-1 flex flex-col">{children}</main>
       </body>

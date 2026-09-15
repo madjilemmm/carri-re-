@@ -31,8 +31,8 @@ export default function CareerTimeline({
           <div className="flex md:flex-col items-center gap-3 md:gap-2.5 py-3 md:py-0 md:min-w-[132px]">
             <div className="flex flex-col items-center gap-2 md:w-full">
               <ClubBadge label={step.clubShort} />
-              <div className="text-center hidden md:block">
-                <p className="text-xs font-semibold leading-tight">{step.club}</p>
+              <div className="text-center hidden md:block w-full min-w-0">
+                <p className="text-xs font-semibold leading-tight truncate">{step.club}</p>
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.p
                     key={showYears ? "years" : "hidden"}
@@ -45,9 +45,9 @@ export default function CareerTimeline({
                 </AnimatePresence>
               </div>
             </div>
-            <div className="flex-1 md:hidden">
-              <p className="text-sm font-semibold leading-tight">{step.club}</p>
-              <p className="text-xs text-text-secondary">
+            <div className="flex-1 min-w-0 md:hidden">
+              <p className="text-sm font-semibold leading-tight truncate">{step.club}</p>
+              <p className="text-xs text-text-secondary truncate">
                 {showYears ? `${step.startYear}–${step.endYear ?? "auj."}` : "••••–••••"} ·{" "}
                 {transferLabels[step.transferType]} · {step.league}
               </p>

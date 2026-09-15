@@ -59,7 +59,7 @@ export default function NavBar() {
             <Link
               key={l.href}
               href={l.href}
-              className={`flex-1 text-center py-3 text-xs font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center min-h-[48px] text-center py-3 text-xs font-medium transition-colors ${
                 active ? "text-purple" : "text-text-secondary"
               }`}
             >
@@ -68,7 +68,11 @@ export default function NavBar() {
           );
         })}
       </nav>
-      <div className="md:hidden h-14" aria-hidden />
+      <div
+        className="md:hidden shrink-0"
+        style={{ height: "calc(48px + env(safe-area-inset-bottom))" }}
+        aria-hidden
+      />
     </>
   );
 }

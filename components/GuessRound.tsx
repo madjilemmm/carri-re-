@@ -187,7 +187,10 @@ export default function GuessRound({
       </div>
 
       {status === "playing" && (
-        <div className="sticky bottom-0 md:relative border-t border-border bg-background px-4 md:px-8 py-4">
+        <div
+          className="sticky bottom-[calc(48px+env(safe-area-inset-bottom))] md:relative md:bottom-auto border-t border-border bg-background px-4 md:px-8 pt-4 z-20"
+          style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+        >
           <div className="max-w-3xl w-full mx-auto flex flex-col gap-3">
             {wrongGuesses.length > 0 && (
               <p className="text-xs text-text-secondary text-center">
