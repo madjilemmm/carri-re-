@@ -20,18 +20,18 @@ export default function GameHeader({
           <span className="text-text-secondary hidden sm:inline">{levelLabel}</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-text-secondary">
-            Question {questionIndex}/{totalQuestions}
+          <span className="text-text-secondary tabular-nums">
+            {questionIndex}/{totalQuestions}
           </span>
-          <span className="font-semibold">{score} pts</span>
-          {streak > 0 && (
-            <span className="text-purple font-semibold">Série {streak}</span>
+          <span className="font-semibold tabular-nums">{score} pts</span>
+          {streak > 1 && (
+            <span className="text-purple font-semibold tabular-nums">Série {streak}</span>
           )}
         </div>
       </div>
       <div className="max-w-3xl mx-auto mt-2 h-1 bg-border rounded-full overflow-hidden">
         <div
-          className="h-full bg-purple transition-all duration-500"
+          className="h-full bg-purple transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>

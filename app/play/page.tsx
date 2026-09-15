@@ -25,11 +25,11 @@ export default function PlaySelect() {
               key={d}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.06, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link
                 href={`/play/${d}`}
-                className="flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 transition-colors group"
+                className="flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 hover:bg-purple/[0.03] transition-colors group"
               >
                 <div>
                   <p className="font-semibold text-lg">{DIFFICULTY_LABELS[d]}</p>
@@ -37,7 +37,7 @@ export default function PlaySelect() {
                     {DIFFICULTY_DESCRIPTIONS[d]}
                   </p>
                 </div>
-                <span className="text-text-secondary group-hover:text-purple transition-colors text-sm shrink-0 ml-4">
+                <span className="text-text-secondary group-hover:text-purple group-hover:translate-x-0.5 transition-all text-sm shrink-0 ml-4 tabular-nums">
                   {getPlayersByDifficulty(d).length} joueurs →
                 </span>
               </Link>
@@ -46,7 +46,10 @@ export default function PlaySelect() {
         </ul>
 
         <div className="mt-8 text-center">
-          <Link href="/play/chrono" className="text-sm text-text-secondary hover:text-purple">
+          <Link
+            href="/play/chrono"
+            className="text-sm font-medium text-text-secondary hover:text-purple transition-colors"
+          >
             Mode Chrono (60 secondes) →
           </Link>
         </div>

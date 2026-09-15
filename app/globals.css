@@ -10,6 +10,12 @@
   --purple-dark: #4E35D4;
   --success: #1E8A55;
   --error: #C44343;
+
+  /* Spacing / motion rhythm tokens */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
@@ -43,9 +49,14 @@ body {
   color: white;
 }
 
-input:focus, button:focus-visible, a:focus-visible {
+:focus-visible {
   outline: 2px solid var(--purple);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+input:focus-visible {
+  outline-offset: 0;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -54,4 +65,17 @@ input:focus, button:focus-visible, a:focus-visible {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

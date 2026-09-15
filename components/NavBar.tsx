@@ -19,20 +19,26 @@ export default function NavBar() {
         <Link href="/" className="text-lg font-extrabold tracking-tight">
           Carrière<span className="text-purple">.</span>
         </Link>
-        <nav className="flex items-center gap-8">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={`text-sm font-medium transition-colors ${
-                pathname === l.href
-                  ? "text-purple"
-                  : "text-text-secondary hover:text-text-primary"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <nav className="flex items-center gap-1">
+          {links.map((l) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`relative text-sm font-medium px-3 py-2 rounded-md transition-colors ${
+                  active
+                    ? "text-purple"
+                    : "text-text-secondary hover:text-text-primary hover:bg-surface"
+                }`}
+              >
+                {l.label}
+                {active && (
+                  <span className="absolute left-3 right-3 -bottom-[21px] h-[2px] bg-purple rounded-full" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
       </header>
 
@@ -47,17 +53,20 @@ export default function NavBar() {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Navigation principale"
       >
-        {links.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            className={`flex-1 text-center py-3 text-xs font-medium ${
-              pathname === l.href ? "text-purple" : "text-text-secondary"
-            }`}
-          >
-            {l.label}
-          </Link>
-        ))}
+        {links.map((l) => {
+          const active = pathname === l.href;
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              className={`flex-1 text-center py-3 text-xs font-medium transition-colors ${
+                active ? "text-purple" : "text-text-secondary"
+              }`}
+            >
+              <span className={`inline-block ${active ? "font-semibold" : ""}`}>{l.label}</span>
+            </Link>
+          );
+        })}
       </nav>
       <div className="md:hidden h-14" aria-hidden />
     </>

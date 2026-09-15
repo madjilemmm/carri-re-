@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useGameStore } from "@/lib/store";
 import { DIFFICULTY_LABELS } from "@/lib/game";
 
@@ -27,17 +28,32 @@ export default function Profile() {
   return (
     <div className="flex-1 flex flex-col items-center px-6 py-14">
       <div className="max-w-md w-full">
-        <h1 className="text-3xl font-extrabold tracking-tight text-center">Profil</h1>
-        <p className="text-text-secondary text-center mt-2">
-          Difficulté favorite : {favoriteDifficulty ? DIFFICULTY_LABELS[favoriteDifficulty] : "—"}
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h1 className="text-3xl font-extrabold tracking-tight text-center">Profil</h1>
+          <p className="text-text-secondary text-center mt-2">
+            Difficulté favorite :{" "}
+            <span className="font-semibold text-text-primary">
+              {favoriteDifficulty ? DIFFICULTY_LABELS[favoriteDifficulty] : "—"}
+            </span>
+          </p>
+        </motion.div>
 
         <div className="grid grid-cols-2 gap-3 mt-10">
-          {stats.map((s) => (
-            <div key={s.label} className="border border-border rounded-lg py-4 px-4 bg-surface">
-              <p className="text-2xl font-extrabold">{s.value}</p>
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 + i * 0.04, duration: 0.3 }}
+              className="border border-border rounded-lg py-4 px-4 bg-surface hover:border-purple/30 transition-colors"
+            >
+              <p className="text-2xl font-extrabold tabular-nums">{s.value}</p>
               <p className="text-xs text-text-secondary mt-1">{s.label}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

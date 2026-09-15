@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { players as allPlayers } from "@/data/players";
 import GuessRound, { RoundResult } from "@/components/GuessRound";
 import SessionEnd from "@/components/SessionEnd";
@@ -37,20 +38,29 @@ export default function ChronoMode() {
 
   if (!started) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6">
-        <h1 className="text-3xl font-extrabold tracking-tight">Mode Chrono</h1>
-        <p className="text-text-secondary max-w-sm">
-          60 secondes pour deviner un maximum de joueurs. Chaque bonne réponse
-          rapporte des points, les indices en coûtent.
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-6"
+      >
+        <p className="text-xs font-semibold tracking-[0.14em] uppercase text-purple">
+          60 secondes
         </p>
-        <button
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Mode Chrono</h1>
+        <p className="text-text-secondary max-w-sm">
+          Devine un maximum de joueurs avant la fin du chrono. Chaque bonne
+          réponse rapporte des points, les indices en coûtent.
+        </p>
+        <motion.button
           type="button"
           onClick={() => setStarted(true)}
+          whileTap={{ scale: 0.97 }}
           className="rounded-lg bg-purple text-white font-semibold px-8 py-3.5 hover:bg-purple-dark transition-colors"
         >
           Démarrer
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
@@ -76,10 +86,21 @@ export default function ChronoMode() {
     <div className="flex-1 flex flex-col">
       <div className="border-b border-border px-4 md:px-8 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between text-sm">
-          <span className="font-bold">Chrono</span>
-          <span className={`font-semibold ${timeLeft <= 10 ? "text-error" : ""}`}>
+          <span className="font-bold">Carrière<span className="text-purple">.</span> Chrono</span>
+          <motion.span
+            key={timeLeft <= 10 ? "urgent" : "normal"}
+            animate={timeLeft <= 10 ? { scale: [1, 1.08, 1] } : {}}
+            transition={{ duration: 0.4 }}
+            className={`font-semibold tabular-nums ${timeLeft <= 10 ? "text-error" : ""}`}
+          >
             {timeLeft}s
-          </span>
+          </motion.span>
+        </div>
+        <div className="max-w-3xl mx-auto mt-2 h-1 bg-border rounded-full overflow-hidden">
+          <div
+            className={`h-full transition-all duration-1000 ease-linear ${timeLeft <= 10 ? "bg-error" : "bg-purple"}`}
+            style={{ width: `${(timeLeft / DURATION) * 100}%` }}
+          />
         </div>
       </div>
       <GuessRound

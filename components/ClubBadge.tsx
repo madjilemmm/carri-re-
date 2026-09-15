@@ -1,10 +1,8 @@
 export default function ClubBadge({
   label,
-  revealed,
   size = "md",
 }: {
   label: string;
-  revealed: boolean;
   size?: "sm" | "md" | "lg";
 }) {
   const sizes = {
@@ -14,14 +12,10 @@ export default function ClubBadge({
   };
   return (
     <div
-      className={`${sizes[size]} shrink-0 rounded-lg border flex items-center justify-center font-bold tracking-wide ${
-        revealed
-          ? "border-purple/40 bg-purple/10 text-purple"
-          : "border-border bg-surface text-text-secondary"
-      }`}
+      className={`${sizes[size]} shrink-0 rounded-lg border border-purple/30 bg-purple/[0.07] text-purple flex items-center justify-center font-bold tracking-wide transition-colors`}
       aria-hidden
     >
-      {revealed ? label : "?"}
+      {label}
     </div>
   );
 }

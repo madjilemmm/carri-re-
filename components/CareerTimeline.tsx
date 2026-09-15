@@ -13,69 +13,62 @@ const transferLabels: Record<string, string> = {
 
 export default function CareerTimeline({
   career,
-  revealedCount,
+  showYears = true,
 }: {
   career: CareerStep[];
-  revealedCount: number;
+  showYears?: boolean;
 }) {
   return (
-    <ol className="flex flex-col gap-0 md:flex-row md:gap-3 md:overflow-x-auto no-scrollbar">
-      {career.map((step, i) => {
-        const revealed = i < revealedCount;
-        return (
-          <li key={i} className="flex md:flex-col items-stretch">
-            <div className="flex md:flex-col items-center gap-3 md:gap-2 py-3 md:py-0 md:min-w-[128px]">
-              <div className="flex flex-col items-center gap-2 md:w-full">
-                <ClubBadge label={step.clubShort} revealed={revealed} />
-                <AnimatePresence mode="wait">
-                  {revealed ? (
-                    <motion.div
-                      key="revealed"
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.25 }}
-                      className="text-center hidden md:block"
-                    >
-                      <p className="text-xs font-semibold leading-tight">{step.club}</p>
-                      <p className="text-[11px] text-text-secondary">
-                        {step.startYear}–{step.endYear ?? "auj."}
-                      </p>
-                    </motion.div>
-                  ) : (
-                    <div className="text-center hidden md:block">
-                      <p className="text-xs font-semibold text-text-secondary">???</p>
-                      <p className="text-[11px] text-text-secondary">—</p>
-                    </div>
-                  )}
+    <ol className="flex flex-col gap-0 md:flex-row md:gap-0 md:overflow-x-auto no-scrollbar">
+      {career.map((step, i) => (
+        <motion.li
+          key={i}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.06, duration: 0.3 }}
+          className="flex md:flex-col items-stretch"
+        >
+          <div className="flex md:flex-col items-center gap-3 md:gap-2.5 py-3 md:py-0 md:min-w-[132px]">
+            <div className="flex flex-col items-center gap-2 md:w-full">
+              <ClubBadge label={step.clubShort} />
+              <div className="text-center hidden md:block">
+                <p className="text-xs font-semibold leading-tight">{step.club}</p>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.p
+                    key={showYears ? "years" : "hidden"}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-[11px] text-text-secondary tabular-nums"
+                  >
+                    {showYears ? `${step.startYear}–${step.endYear ?? "auj."}` : "••••–••••"}
+                  </motion.p>
                 </AnimatePresence>
               </div>
-              <div className="flex-1 md:hidden">
-                {revealed ? (
-                  <motion.div
-                    initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <p className="text-sm font-semibold leading-tight">{step.club}</p>
-                    <p className="text-xs text-text-secondary">
-                      {step.startYear}–{step.endYear ?? "auj."} · {transferLabels[step.transferType]} · {step.league}
-                    </p>
-                  </motion.div>
-                ) : (
-                  <div>
-                    <p className="text-sm font-semibold text-text-secondary">Club inconnu</p>
-                    <p className="text-xs text-text-secondary">—</p>
-                  </div>
-                )}
-              </div>
             </div>
-            {i < career.length - 1 && (
-              <div className="hidden md:flex items-center px-1 text-text-secondary">→</div>
-            )}
-            {i < career.length - 1 && <div className="md:hidden border-b border-border ml-[22px]" />}
-          </li>
-        );
-      })}
+            <div className="flex-1 md:hidden">
+              <p className="text-sm font-semibold leading-tight">{step.club}</p>
+              <p className="text-xs text-text-secondary">
+                {showYears ? `${step.startYear}–${step.endYear ?? "auj."}` : "••••–••••"} ·{" "}
+                {transferLabels[step.transferType]} · {step.league}
+              </p>
+            </div>
+          </div>
+          {i < career.length - 1 && (
+            <div className="hidden md:flex items-center px-1.5 text-border" aria-hidden>
+              <svg width="20" height="10" viewBox="0 0 20 10" fill="none">
+                <path
+                  d="M0 5H18M18 5L13 1M18 5L13 9"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          )}
+          {i < career.length - 1 && <div className="md:hidden border-b border-border ml-[22px]" />}
+        </motion.li>
+      ))}
     </ol>
   );
 }

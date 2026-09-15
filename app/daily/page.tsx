@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { getDailyPlayer, getDailyIndex } from "@/data/players";
 import GuessRound, { RoundResult } from "@/components/GuessRound";
 import { useGameStore, todayKey } from "@/lib/store";
-
-const MAX_HINTS = 5;
 
 export default function DailyMode() {
   const player = useMemo(() => getDailyPlayer(), []);
@@ -29,36 +28,47 @@ export default function DailyMode() {
     : null);
 
   if (finalResult) {
-    const grid = Array.from({ length: MAX_HINTS })
-      .map((_, i) => (i < finalResult.hintsUsed + 1 ? (finalResult.found ? "■" : "■") : "□"))
+    const foundLabel =
+      finalResult.hintsUsed === 0
+        ? "Trouvé sans indice"
+        : `Trouvé avec ${finalResult.hintsUsed} indice${finalResult.hintsUsed > 1 ? "s" : ""}`;
+    const gridSize = Math.max(finalResult.hintsUsed, 4) + 1;
+    const grid = Array.from({ length: gridSize })
+      .map((_, i) => (i <= finalResult.hintsUsed ? "■" : "□"))
       .join("");
     const shareText = `Carrière #${dailyIndex}\n${
-      finalResult.found ? `Trouvé en ${finalResult.hintsUsed + 1} indice${finalResult.hintsUsed + 1 > 1 ? "s" : ""}` : "Non trouvé"
+      finalResult.found ? foundLabel : "Non trouvé"
     }\n${grid}`;
 
     return (
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-14 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="flex-1 flex flex-col items-center justify-center px-6 py-14 text-center"
+      >
         <div className="max-w-sm w-full">
-          <p className="text-text-secondary text-sm">Career #{dailyIndex}</p>
+          <p className="text-text-secondary text-sm font-medium">Career #{dailyIndex}</p>
           <h1 className="text-3xl font-extrabold tracking-tight mt-1">
             {finalResult.found ? "Bien joué !" : "Raté aujourd'hui"}
           </h1>
           <p className="text-text-secondary mt-2">
-            {finalResult.found
-              ? `Trouvé en ${finalResult.hintsUsed + 1} indice${finalResult.hintsUsed + 1 > 1 ? "s" : ""}`
-              : "Reviens demain pour une nouvelle carrière."}
+            {finalResult.found ? foundLabel : "Reviens demain pour une nouvelle carrière."}
           </p>
-          <p className="text-2xl tracking-widest mt-6">{grid}</p>
-          <p className="text-sm text-text-secondary mt-4">Série quotidienne : {dailyStreak}</p>
-          <button
+          <p className="text-2xl tracking-[0.3em] mt-6 text-purple">{grid}</p>
+          <p className="text-sm text-text-secondary mt-4">
+            Série quotidienne : <span className="font-semibold text-text-primary">{dailyStreak}</span>
+          </p>
+          <motion.button
             type="button"
             onClick={() => navigator.clipboard?.writeText(shareText)}
+            whileTap={{ scale: 0.97 }}
             className="mt-8 rounded-lg border border-border font-semibold px-6 py-3 hover:border-purple/40 transition-colors"
           >
             Copier le résultat
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -66,15 +76,14 @@ export default function DailyMode() {
     <div className="flex-1 flex flex-col">
       <div className="border-b border-border px-4 md:px-8 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between text-sm">
-          <span className="font-bold">Daily</span>
-          <span className="text-text-secondary">Career #{dailyIndex}</span>
+          <span className="font-bold">Carrière<span className="text-purple">.</span> Daily</span>
+          <span className="text-text-secondary tabular-nums">Career #{dailyIndex}</span>
         </div>
       </div>
       <GuessRound
         key={player.id}
         player={player}
         difficulty={player.difficulty}
-        maxHints={MAX_HINTS}
         onResult={handleResult}
       />
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Player } from "@/lib/types";
 import { searchPlayers } from "@/lib/search";
 import { players as allPlayers } from "@/data/players";
@@ -66,45 +67,57 @@ export default function PlayerSearch({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {open && results.length > 0 && (
-        <ul
-          role="listbox"
-          className="absolute bottom-full mb-2 left-0 right-0 bg-surface border border-border rounded-lg shadow-none overflow-hidden max-h-72 overflow-y-auto z-30"
-        >
-          {results.map((r, i) => (
-            <li key={r.player.id}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={i === activeIndex}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  submitGuess(r.player);
-                }}
-                onMouseEnter={() => setActiveIndex(i)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-border last:border-b-0 ${
-                  i === activeIndex ? "bg-purple/10" : ""
-                }`}
-              >
-                <div className="w-9 h-9 shrink-0 rounded-full border border-border bg-background flex items-center justify-center text-xs font-bold">
-                  {r.player.knownAs
-                    .split(" ")
-                    .map((w) => w[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold truncate">{r.player.knownAs}</p>
-                  <p className="text-xs text-text-secondary truncate">
-                    {r.player.nationality} · {r.player.position}
-                  </p>
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <AnimatePresence>
+        {open && results.length > 0 && (
+          <motion.ul
+            role="listbox"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute bottom-full mb-2 left-0 right-0 bg-surface border border-border rounded-lg overflow-hidden max-h-72 overflow-y-auto z-30"
+          >
+            {results.map((r, i) => (
+              <li key={r.player.id}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={i === activeIndex}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    submitGuess(r.player);
+                  }}
+                  onMouseEnter={() => setActiveIndex(i)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left border-b border-border last:border-b-0 transition-colors ${
+                    i === activeIndex ? "bg-purple/[0.08]" : "hover:bg-border/30"
+                  }`}
+                >
+                  <div
+                    className={`w-9 h-9 shrink-0 rounded-full border flex items-center justify-center text-xs font-bold transition-colors ${
+                      i === activeIndex
+                        ? "border-purple/40 bg-purple/10 text-purple"
+                        : "border-border bg-background text-text-primary"
+                    }`}
+                  >
+                    {r.player.knownAs
+                      .split(" ")
+                      .map((w) => w[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate">{r.player.knownAs}</p>
+                    <p className="text-xs text-text-secondary truncate">
+                      {r.player.nationality} · {r.player.position}
+                    </p>
+                  </div>
+                </button>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
       <input
         type="text"
         inputMode="text"
@@ -119,7 +132,7 @@ export default function PlayerSearch({
         placeholder="Rechercher un joueur…"
         aria-label="Rechercher un joueur"
         aria-autocomplete="list"
-        className="w-full rounded-lg border border-border bg-surface px-4 py-3.5 text-base placeholder:text-text-secondary disabled:opacity-50 focus:border-purple"
+        className="w-full rounded-lg border border-border bg-surface px-4 py-3.5 text-base placeholder:text-text-secondary disabled:opacity-50 focus:border-purple transition-colors"
       />
     </div>
   );

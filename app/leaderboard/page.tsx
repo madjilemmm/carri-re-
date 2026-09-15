@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useGameStore } from "@/lib/store";
 import { DIFFICULTY_LABELS } from "@/lib/game";
 import { Difficulty } from "@/lib/types";
@@ -21,28 +22,42 @@ export default function Leaderboard() {
         </p>
 
         <div className="mt-10 flex flex-col gap-3">
-          <div className="flex items-center justify-between border border-border rounded-lg px-5 py-4 bg-surface">
-            <span className="text-sm font-medium">Meilleur score</span>
-            <span className="font-bold">{bestScorePercent}%</span>
-          </div>
-          <div className="flex items-center justify-between border border-border rounded-lg px-5 py-4 bg-surface">
-            <span className="text-sm font-medium">Meilleure série</span>
-            <span className="font-bold">{bestStreakEver}</span>
-          </div>
-          {lastSession && (
-            <div className="flex items-center justify-between border border-border rounded-lg px-5 py-4 bg-surface">
-              <span className="text-sm font-medium">Dernière session ({DIFFICULTY_LABELS[lastSession.difficulty]})</span>
-              <span className="font-bold">{lastSession.totalPoints} pts</span>
-            </div>
-          )}
+          {[
+            { label: "Meilleur score", value: `${bestScorePercent}%` },
+            { label: "Meilleure série", value: bestStreakEver },
+            ...(lastSession
+              ? [
+                  {
+                    label: `Dernière session (${DIFFICULTY_LABELS[lastSession.difficulty]})`,
+                    value: `${lastSession.totalPoints} pts`,
+                  },
+                ]
+              : []),
+          ].map((row, i) => (
+            <motion.div
+              key={row.label}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, duration: 0.25 }}
+              className="flex items-center justify-between border border-border rounded-lg px-5 py-4 bg-surface"
+            >
+              <span className="text-sm font-medium">{row.label}</span>
+              <span className="font-bold tabular-nums">{row.value}</span>
+            </motion.div>
+          ))}
         </div>
 
-        <h2 className="text-sm font-semibold text-text-secondary mt-10 mb-3">Parties par difficulté</h2>
+        <h2 className="text-sm font-semibold text-text-secondary mt-10 mb-3 tracking-wide uppercase">
+          Parties par difficulté
+        </h2>
         <div className="flex flex-col gap-2">
           {difficulties.map((d) => (
-            <div key={d} className="flex items-center justify-between text-sm border-b border-border py-2">
-              <span>{DIFFICULTY_LABELS[d]}</span>
-              <span className="text-text-secondary">{difficultyCounts[d]}</span>
+            <div
+              key={d}
+              className="flex items-center justify-between text-sm border-b border-border py-2.5"
+            >
+              <span className="font-medium">{DIFFICULTY_LABELS[d]}</span>
+              <span className="text-text-secondary tabular-nums">{difficultyCounts[d]}</span>
             </div>
           ))}
         </div>
