@@ -1,0 +1,56 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Difficulty } from "@/lib/types";
+import { DIFFICULTY_LABELS, DIFFICULTY_DESCRIPTIONS } from "@/lib/game";
+import { getPlayersByDifficulty } from "@/data/players";
+
+const difficulties: Difficulty[] = ["facile", "normal", "difficile", "expert"];
+
+export default function PlaySelect() {
+  return (
+    <div className="flex-1 flex flex-col items-center px-6 py-14">
+      <div className="max-w-xl w-full">
+        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-center">
+          Choisis ta difficulté
+        </h1>
+        <p className="text-text-secondary text-center mt-2 mb-10">
+          10 joueurs par session. Moins d&apos;indices, plus de points.
+        </p>
+
+        <ul className="flex flex-col gap-3">
+          {difficulties.map((d, i) => (
+            <motion.li
+              key={d}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Link
+                href={`/play/${d}`}
+                className="flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 hover:border-purple/50 transition-colors group"
+              >
+                <div>
+                  <p className="font-semibold text-lg">{DIFFICULTY_LABELS[d]}</p>
+                  <p className="text-sm text-text-secondary mt-0.5">
+                    {DIFFICULTY_DESCRIPTIONS[d]}
+                  </p>
+                </div>
+                <span className="text-text-secondary group-hover:text-purple transition-colors text-sm shrink-0 ml-4">
+                  {getPlayersByDifficulty(d).length} joueurs →
+                </span>
+              </Link>
+            </motion.li>
+          ))}
+        </ul>
+
+        <div className="mt-8 text-center">
+          <Link href="/play/chrono" className="text-sm text-text-secondary hover:text-purple">
+            Mode Chrono (60 secondes) →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
